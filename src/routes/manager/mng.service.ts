@@ -3,6 +3,10 @@ import prisma from "../../utils/prisma";
 import { CreateManagerInputType } from "./mng.schema";
 import { error } from "console";
 
+/**
+ *
+ * @CeateManager
+ */
 export const createManager = async (input: CreateManagerInputType) => {
   const manager = input;
 
@@ -22,7 +26,11 @@ export const createManager = async (input: CreateManagerInputType) => {
   return createManager;
 };
 
-//
+/**
+ * @findManagerByUserName
+ * @param user_name
+ * @returns
+ */
 export const findManagerByUsername = async (user_name: string) => {
   try {
     const manager = await prisma.manager.findUnique({
@@ -38,7 +46,11 @@ export const findManagerByUsername = async (user_name: string) => {
   }
 };
 
-//
+/**
+ * @FindMantManger
+ * @param query
+ * @returns
+ */
 export async function findsManyManager(query = {}) {
   try {
     const managers = await prisma.manager.findMany({
@@ -57,5 +69,26 @@ export async function findsManyManager(query = {}) {
     }
   } catch (e) {
     return [];
+  }
+}
+
+/**
+ * @DeLete_By_field
+ */
+export async function deleteManagerByUsername(input_userName: string) {
+  try {
+    const manager = await prisma.manager.update({
+      where: {
+        user_name: input_userName,
+      },
+      data: {
+        status: "OFF",
+      },
+    });
+
+    return manager;
+  } catch (e) {
+    console.log(e);
+    return false;
   }
 }

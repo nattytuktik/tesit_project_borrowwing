@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
   createManager,
+  deleteManagerByUsername,
   findManagerByUsername,
   findsManyManager,
 } from "./mng.service";
@@ -101,5 +102,41 @@ export async function findsManagerHandler(
     return reply.code(500).send(e).send({
       masseges: "Inernal error at findCustomerHandler",
     });
+  }
+}
+
+/**
+ *  @DELETE_STATUS_OF
+ */
+
+export async function deleteManagerHandler(
+  request: FastifyRequest<{
+    Body: {
+      username: string;
+    };
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const { username } = request.body;
+
+    const manager = await findManagerByUsername(username);
+    if (!manager) {
+      return reply.code(404).send({ error: "Manager not found" });
+    }
+
+    // "Soft delete" the manager by updating its status field
+
+    const deleteManager = await deleteManagerByUsername(manager.user_name);
+
+    if (!deleteManager) {
+      return reply.code(500).send({
+        error: "Internal Server Error",
+        details: "Someting Error At [Function] = deleteMangerbyUsername ",
+      });
+    }
+    return reply.code(200).send({ message: "Manager marked as deleted" });
+  } catch (e) {
+    return reply.code(500).send({ error: "Internal Server Error", details: e });
   }
 }

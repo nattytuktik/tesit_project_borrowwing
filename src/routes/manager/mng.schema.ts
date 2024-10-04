@@ -38,9 +38,9 @@ export type LoginSchemaInputType = z.infer<typeof loginSchema>;
 //   loginResponseSchema,
 // });
 
-const createManagerJsonSchema = zodToJsonSchema(createManagerSchema, "createManagerSchema");
-const loginResponseJsonSchema = zodToJsonSchema(loginResponseSchema, "loginResponseSchema");
-const createManagerResponseSchema = zodToJsonSchema(IcreateManagerResponseSchema, "createMangerResposeSchema")
+const createManagerJsonSchema = {$id: "createManagerSchema",...zodToJsonSchema(createManagerSchema)}
+const loginResponseJsonSchema = {$id: "loginResponseSchema",...zodToJsonSchema(loginResponseSchema)}
+const createManagerResponseSchema = {$id:"createManagerResponseSchema",...zodToJsonSchema(IcreateManagerResponseSchema)}
 
 export const managerSchema = [
   createManagerJsonSchema,

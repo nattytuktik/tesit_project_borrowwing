@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
-import { $ref } from "./mng.schema";
+import { $ref } from "../../utils/schema";
 import {
   createManagerHandler,
   findsManagerHandler,
