@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model test {
+  id     Int    @id @default(autoincrement())
+  name   String
+  title  String
+  status Status @default(ON)
+}
+
+model Customer {
+  id         Int         @id @default(autoincrement())
+  first_name String
+  last_name  String
+  tel        String      @db.VarChar(10)
+  status     Status      @default(ON)
+  Borrowing  Borrowing[]
+}
+
+model Borrowing {
+  id          Int           @id @default(autoincrement())
+  customer_id Int
+  manager_id  Int
+  start_date  DateTime
+  end_date    DateTime
+  status      Status        @default(ON)
+  manager     Manager       @relation(fields: [manager_id], references: [id])
+  customer    Customer      @relation(fields: [customer_id], references: [id])
+  pandding    Pandding      @default(PANDDING)
+  Reservation Reservation[]
+}
+
+model Manager {
+  id         Int         @id @default(autoincrement())
+  first_name String
+  last_name  String
+  user_name  String      @unique
+  password   String
+  salt       String
+  tel        String      @db.VarChar(10)
+  status     Status      @default(ON)
+  borrowing  Borrowing[]
+}
+
+model Equiment {
+  id          Int           @id @default(autoincrement())
+  name        String
+  quantity    Int
+  reservation Reservation[]
+  status      Status        @default(ON)
+}
+
+model Reservation {
+  borrowing_id Int
+  equipment_id Int
+  quantity     Int
+  borrowing    Borrowing @relation(fields: [borrowing_id], references: [id])
+  equipment    Equiment  @relation(fields: [equipment_id], references: [id])
+  status       Status    @default(ON)
+
+  @@id([borrowing_id, equipment_id])
+}
+
+enum Status {
+  ON
+  OFF
+}
+
+enum Pandding {
+  PANDDING
+  FAILD
+  SUCCESS
+}
