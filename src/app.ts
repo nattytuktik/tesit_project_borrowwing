@@ -32,8 +32,13 @@ const app: FastifyPluginAsync<AppOptions> = async (
     options: opts,
   });
 
-  // Add Schema
+  /**
+   * Registor Schema
+   */
+  // manager Schema
   addCustomSchema(fastify, managerSchema);
+
+  // Schema
 };
 
 export default app;

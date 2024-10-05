@@ -14,7 +14,7 @@ import { verifyPassword } from "../../utils/hash";
  * @param reply
  * @returns
  */
-export const createManagerHandler = async (
+export const registorManagerHandler = async (
   request: FastifyRequest<{
     Body: CreateManagerInputType;
   }>,
@@ -22,8 +22,20 @@ export const createManagerHandler = async (
 ) => {
   try {
     const body = request.body;
-    const newManager = await createManager(body);
 
+    // find old manager
+    const findAlrealyManager = await findManagerByUsername(body.user_name);
+
+    if (findAlrealyManager) {
+      const badRequestMassages = {
+        code: 400,
+        details: "you were registor or username is alrealy used",
+      };
+      return reply.code(400).send(badRequestMassages);
+    }
+
+    // registor
+    const newManager = await createManager(body);
     return newManager;
   } catch (e) {
     reply.code(500).send({
@@ -71,6 +83,11 @@ export const loginHandler = async (
 
       const accessToken = request.server.jwt.sign(rest);
 
+      reply.setCookie("access_token", accessToken, {
+        path: "/",
+        secure: true,
+        httpOnly: true,
+      });
       return { accessToken: accessToken };
     }
     // not match
@@ -138,5 +155,22 @@ export async function deleteManagerHandler(
     return reply.code(200).send({ message: "Manager marked as deleted" });
   } catch (e) {
     return reply.code(500).send({ error: "Internal Server Error", details: e });
+  }
+}
+
+/**
+ * @Logout_Handler
+ */
+export async function logoutHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    reply.clearCookie("access_token");
+  } catch (e) {
+    reply.code(500).send({
+      error: "Internal Server Error",
+      details: e,
+    });
   }
 }

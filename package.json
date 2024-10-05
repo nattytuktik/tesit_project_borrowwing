@@ -29,6 +29,7 @@
     "zod-to-json-schema": "^3.23.3"
   },
   "devDependencies": {
+    "@fastify/cookie": "^10.0.1",
     "@types/node": "^20.4.4",
     "c8": "^10.1.2",
     "concurrently": "^8.2.2",
