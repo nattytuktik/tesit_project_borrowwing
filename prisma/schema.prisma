@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -27,6 +23,7 @@ model Customer {
   tel        String      @db.VarChar(10)
   status     Status      @default(ALREALY)
   Borrowing  Borrowing[]
+  timeStamps DateTime    @default(now())
 }
 
 model Borrowing {
@@ -40,6 +37,7 @@ model Borrowing {
   customer    Customer      @relation(fields: [customer_id], references: [id])
   pandding    Pandding      @default(PANDDING)
   Reservation Reservation[]
+  timeStamps  DateTime      @default(now())
 }
 
 model Manager {
@@ -52,6 +50,7 @@ model Manager {
   tel        String      @db.VarChar(10)
   status     Status      @default(ALREALY)
   borrowing  Borrowing[]
+  timeStamps DateTime    @default(now())
 }
 
 model Equiment {
@@ -59,7 +58,8 @@ model Equiment {
   name        String
   quantity    Int
   reservation Reservation[]
-  status      Status        @default(ALREALY)
+  status      Status        @default(ALREALY) 
+  timeStamps  DateTime      @default(now())
 }
 
 model Reservation {
@@ -69,6 +69,7 @@ model Reservation {
   borrowing    Borrowing @relation(fields: [borrowing_id], references: [id])
   equipment    Equiment  @relation(fields: [equipment_id], references: [id])
   status       Status    @default(ALREALY)
+  timeStamps   DateTime  @default(now())
 
   @@id([borrowing_id, equipment_id])
 }

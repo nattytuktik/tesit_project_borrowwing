@@ -1,7 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../utils/prisma";
 import { CreateCustomerInput } from "./customer.schema";
-import { deleteCustomerById } from "./customer.service";
+import {
+  createCustomer,
+  deleteCustomerById,
+  findManyCustomer,
+} from "./customer.service";
 
 //
 //
@@ -24,13 +28,11 @@ export async function registerCustomerHandler(
   request: FastifyRequest<{ Body: CreateCustomerInput }>,
   reply: FastifyReply
 ) {
-  const customerFromRequest = request.body;
-  const createCustomer = await prisma.customer.create({
-    data: customerFromRequest,
-  });
-
   try {
-    return createCustomer.id;
+    const customerFromRequest = request.body;
+    const customer = await createCustomer(customerFromRequest);
+
+    return customer;
   } catch (error) {
     reply.code(500).send({
       error,
@@ -52,13 +54,12 @@ export async function getCustomers(
   reply: FastifyReply
 ) {
   try {
-    const customers = await prisma.customer.findMany({
-      select: {
-        first_name: true,
-        last_name: true,
-        tel: true,
-      },
-    });
+    const customers = await findManyCustomer();
+    // Check if the response is an object error
+    if (typeof customers === "object") {
+      return reply.code(500).send(customers);
+    }
+
     return customers;
   } catch (e) {
     return {

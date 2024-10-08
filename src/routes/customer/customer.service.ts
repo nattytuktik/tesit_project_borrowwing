@@ -1,7 +1,7 @@
 import prisma from "../../utils/prisma";
 import { CreateCustomerInput } from "./customer.schema";
 
-/**
+/** Cretae Customer
  *
  *
  */
@@ -19,10 +19,15 @@ export async function createCustomer(data: CreateCustomerInput) {
   }
 }
 
-export async function findCustomers() {
+/** Find Customers
+ *
+ *
+ */
+export async function findManyCustomer() {
   try {
     const customers = await prisma.customer.findMany({
       select: {
+        id: true,
         first_name: true,
         last_name: true,
         tel: true,
@@ -37,7 +42,8 @@ export async function findCustomers() {
   }
 }
 
-/**
+/** Find Customer By Id
+ *
  *
  */
 export async function findCustomerById(id: number) {
@@ -54,6 +60,10 @@ export async function findCustomerById(id: number) {
   }
 }
 
+/** Delete Customer By Id
+ *
+ *
+ */
 export async function deleteCustomerById(id: number) {
   try {
     const customers = await prisma.customer.update({
@@ -71,6 +81,10 @@ export async function deleteCustomerById(id: number) {
   }
 }
 
+/** Update Customer By Id
+ *
+ *
+ */
 export async function updateCustomerById(
   id: number,
   data: CreateCustomerInput
