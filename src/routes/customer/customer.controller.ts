@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import prisma from "../../utils/prisma";
 import { CreateCustomerInput } from "./customer.schema";
+import { ServicesError } from "../../utils/error.type";
 import {
   createCustomer,
   deleteCustomerById,
@@ -32,6 +32,13 @@ export async function registerCustomerHandler(
     const customerFromRequest = request.body;
     const customer = await createCustomer(customerFromRequest);
 
+    // Check if the response is an object error
+    if (customer instanceof ServicesError) {
+      return reply.code(500).send({
+        msg: "Internal Server Error On Creating Customer service",
+        error: customer,
+      });
+    }
     return customer;
   } catch (error) {
     reply.code(500).send({
@@ -56,8 +63,11 @@ export async function getCustomers(
   try {
     const customers = await findManyCustomer();
     // Check if the response is an object error
-    if (typeof customers === "object") {
-      return reply.code(500).send(customers);
+    if (customers instanceof ServicesError) {
+      return reply.code(500).send({
+        msg: "Internal Server Error On FindManyCustomer service",
+        error: customers,
+      });
     }
 
     return customers;

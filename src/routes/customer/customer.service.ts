@@ -1,5 +1,6 @@
 import prisma from "../../utils/prisma";
 import { CreateCustomerInput } from "./customer.schema";
+import { ServicesError } from "../../utils/error.type"; // Adjust the import path as necessary
 
 /** Cretae Customer
  *
@@ -12,17 +13,16 @@ export async function createCustomer(data: CreateCustomerInput) {
     });
     return customers;
   } catch (e) {
-    return {
-      status: 500,
-      msg: e,
-    };
+    return e;
   }
 }
 
 /** Find Customers
  *
  *
+ *
  */
+
 export async function findManyCustomer() {
   try {
     const customers = await prisma.customer.findMany({
@@ -35,10 +35,7 @@ export async function findManyCustomer() {
     });
     return customers;
   } catch (e) {
-    return {
-      status: 500,
-      msg: e,
-    };
+    throw new ServicesError("Failed to fetch customers");
   }
 }
 
@@ -53,10 +50,7 @@ export async function findCustomerById(id: number) {
     });
     return customers;
   } catch (e) {
-    return {
-      status: 500,
-      msg: e,
-    };
+    throw new ServicesError("Failed to fetch customers");
   }
 }
 
@@ -74,10 +68,7 @@ export async function deleteCustomerById(id: number) {
     });
     return customers;
   } catch (e) {
-    return {
-      status: 500,
-      msg: e,
-    };
+    throw new ServicesError("Failed to delete customers");
   }
 }
 
@@ -96,9 +87,6 @@ export async function updateCustomerById(
     });
     return customers;
   } catch (e) {
-    return {
-      status: 500,
-      msg: e,
-    };
+    throw new ServicesError("Failed to update customers");
   }
 }
