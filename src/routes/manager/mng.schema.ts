@@ -1,5 +1,4 @@
-
-import z from "zod"
+import z from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
 const managerCore = {
@@ -28,22 +27,25 @@ const loginResponseSchema = z.object({
   accessToken: z.string(),
 });
 
+// export
 export type CreateManagerInputType = z.infer<typeof createManagerSchema>;
 export type LoginSchemaInputType = z.infer<typeof loginSchema>;
 
-
-// export const { schemas: managerSchema, $ref } = buildJsonSchemas({
-//   createManagerSchema,
-//   createManagerResponseSchema,
-//   loginResponseSchema,
-// });
-
-const createManagerJsonSchema = {$id: "createManagerSchema",...zodToJsonSchema(createManagerSchema)}
-const loginResponseJsonSchema = {$id: "loginResponseSchema",...zodToJsonSchema(loginResponseSchema)}
-const createManagerResponseSchema = {$id:"createManagerResponseSchema",...zodToJsonSchema(IcreateManagerResponseSchema)}
+const createManagerJsonSchema = {
+  $id: "createManagerSchema",
+  ...zodToJsonSchema(createManagerSchema),
+};
+const loginResponseJsonSchema = {
+  $id: "loginResponseSchema",
+  ...zodToJsonSchema(loginResponseSchema),
+};
+const createManagerResponseSchema = {
+  $id: "createManagerResponseSchema",
+  ...zodToJsonSchema(IcreateManagerResponseSchema),
+};
 
 export const managerSchema = [
   createManagerJsonSchema,
   loginResponseJsonSchema,
-  createManagerResponseSchema
-]
+  createManagerResponseSchema,
+];

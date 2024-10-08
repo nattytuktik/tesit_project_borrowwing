@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('ON', 'OFF');
+CREATE TYPE "Status" AS ENUM ('ON', 'DELTED', 'ALREALY', 'INALREALY', 'OFF');
 
 -- CreateEnum
 CREATE TYPE "Pandding" AS ENUM ('PANDDING', 'FAILD', 'SUCCESS');
@@ -9,7 +9,7 @@ CREATE TABLE "test" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
 
     CONSTRAINT "test_pkey" PRIMARY KEY ("id")
 );
@@ -20,7 +20,7 @@ CREATE TABLE "Customer" (
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "tel" VARCHAR(10) NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
 
     CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
 );
@@ -32,7 +32,7 @@ CREATE TABLE "Borrowing" (
     "manager_id" INTEGER NOT NULL,
     "start_date" TIMESTAMP(3) NOT NULL,
     "end_date" TIMESTAMP(3) NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
     "pandding" "Pandding" NOT NULL DEFAULT 'PANDDING',
 
     CONSTRAINT "Borrowing_pkey" PRIMARY KEY ("id")
@@ -47,7 +47,7 @@ CREATE TABLE "Manager" (
     "password" TEXT NOT NULL,
     "salt" TEXT NOT NULL,
     "tel" VARCHAR(10) NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
 
     CONSTRAINT "Manager_pkey" PRIMARY KEY ("id")
 );
@@ -57,7 +57,7 @@ CREATE TABLE "Equiment" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
 
     CONSTRAINT "Equiment_pkey" PRIMARY KEY ("id")
 );
@@ -67,7 +67,7 @@ CREATE TABLE "Reservation" (
     "borrowing_id" INTEGER NOT NULL,
     "equipment_id" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'ON',
+    "status" "Status" NOT NULL DEFAULT 'ALREALY',
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("borrowing_id","equipment_id")
 );

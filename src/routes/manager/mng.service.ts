@@ -60,6 +60,9 @@ export async function findsManyManager(query = {}) {
         last_name: true,
         user_name: true,
       },
+      where: {
+        status: "ALREALY",
+      },
     });
 
     if (!managers) {

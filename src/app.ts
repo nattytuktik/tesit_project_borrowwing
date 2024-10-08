@@ -3,6 +3,7 @@ import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 import { managerSchema } from "./routes/manager/mng.schema";
 import { addCustomSchema } from "./utils/schema";
+import { customerSchema } from "./routes/customer/customer.schema";
 
 export interface AppOptions
   extends FastifyServerOptions,
@@ -37,8 +38,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
    */
   // manager Schema
   addCustomSchema(fastify, managerSchema);
-
-  // Schema
+  addCustomSchema(fastify, customerSchema);
 };
 
 export default app;

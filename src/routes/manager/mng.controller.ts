@@ -10,9 +10,15 @@ import { verifyPassword } from "../../utils/hash";
 
 /**
  *
- * @param request
- * @param reply
- * @returns
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * Register Manager Handler
  */
 export const registorManagerHandler = async (
   request: FastifyRequest<{
@@ -47,9 +53,17 @@ export const registorManagerHandler = async (
 
 /**
  *
- * @param request
- * @param reply
- * @returns
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * Login Handler
  */
 export const loginHandler = async (
   request: FastifyRequest<{
@@ -101,6 +115,17 @@ export const loginHandler = async (
 /**
  *
  *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *  FINDS_MANY_MANAGER
  */
 export async function findsManagerHandler(
   request: FastifyRequest,
@@ -123,7 +148,18 @@ export async function findsManagerHandler(
 }
 
 /**
- *  @DELETE_STATUS_OF
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *  DELETE_STATUS_OF
  */
 
 export async function deleteManagerHandler(
@@ -159,7 +195,19 @@ export async function deleteManagerHandler(
 }
 
 /**
- * @Logout_Handler
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * Logout_Handler
  */
 export async function logoutHandler(
   request: FastifyRequest,

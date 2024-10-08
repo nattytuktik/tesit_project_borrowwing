@@ -17,7 +17,7 @@ model test {
   id     Int    @id @default(autoincrement())
   name   String
   title  String
-  status Status @default(ON)
+  status Status @default(ALREALY)
 }
 
 model Customer {
@@ -25,7 +25,7 @@ model Customer {
   first_name String
   last_name  String
   tel        String      @db.VarChar(10)
-  status     Status      @default(ON)
+  status     Status      @default(ALREALY)
   Borrowing  Borrowing[]
 }
 
@@ -35,7 +35,7 @@ model Borrowing {
   manager_id  Int
   start_date  DateTime
   end_date    DateTime
-  status      Status        @default(ON)
+  status      Status        @default(ALREALY)
   manager     Manager       @relation(fields: [manager_id], references: [id])
   customer    Customer      @relation(fields: [customer_id], references: [id])
   pandding    Pandding      @default(PANDDING)
@@ -50,7 +50,7 @@ model Manager {
   password   String
   salt       String
   tel        String      @db.VarChar(10)
-  status     Status      @default(ON)
+  status     Status      @default(ALREALY)
   borrowing  Borrowing[]
 }
 
@@ -59,7 +59,7 @@ model Equiment {
   name        String
   quantity    Int
   reservation Reservation[]
-  status      Status        @default(ON)
+  status      Status        @default(ALREALY)
 }
 
 model Reservation {
@@ -68,13 +68,16 @@ model Reservation {
   quantity     Int
   borrowing    Borrowing @relation(fields: [borrowing_id], references: [id])
   equipment    Equiment  @relation(fields: [equipment_id], references: [id])
-  status       Status    @default(ON)
+  status       Status    @default(ALREALY)
 
   @@id([borrowing_id, equipment_id])
 }
 
 enum Status {
   ON
+  DELETED
+  ALREALY
+  INALREALY
   OFF
 }
 

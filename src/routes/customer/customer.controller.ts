@@ -1,13 +1,26 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../utils/prisma";
 import { CreateCustomerInput } from "./customer.schema";
+import { deleteCustomerById } from "./customer.service";
 
 //
 //
 //
 //
 
-async function registerCustomerHandler(
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ 
+ * Register Customer Handler
+ */
+export async function registerCustomerHandler(
   request: FastifyRequest<{ Body: CreateCustomerInput }>,
   reply: FastifyReply
 ) {
@@ -25,8 +38,19 @@ async function registerCustomerHandler(
   }
 }
 
-//
-async function getCustomer(request: FastifyRequest, reply: FastifyReply) {
+/**
+ *
+ *
+ *
+ * Find Customer Handler
+ *
+ *
+ *
+ */
+export async function getCustomers(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
   try {
     const customers = await prisma.customer.findMany({
       select: {
@@ -43,4 +67,22 @@ async function getCustomer(request: FastifyRequest, reply: FastifyReply) {
     };
   }
 }
-export { registerCustomerHandler, getCustomer };
+
+/**
+ *
+ */
+export async function deleteCustomerByIdHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
+  try {
+    const customers = await deleteCustomerById(parseInt(id));
+    return customers;
+  } catch (e) {
+    return {
+      status: 500,
+      details: e,
+    };
+  }
+}

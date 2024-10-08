@@ -1,9 +1,58 @@
 import { FastifyPluginAsync } from "fastify";
-import { getCustomer, registerCustomerHandler } from "./customer.controller";
+import {
+  getCustomers,
+  registerCustomerHandler,
+  deleteCustomerByIdHandler,
+} from "./customer.controller";
 
 const customer: FastifyPluginAsync = async (fastify, opts) => {
+  /**
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   * Register Customer Controller
+   */
+
   fastify.post("/", registerCustomerHandler);
-  fastify.get("/", getCustomer);
+
+  /**
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   * Find Customer Controller
+   */
+  fastify.get(
+    "/",
+    {
+      preHandler: [fastify.authenticate],
+    },
+    getCustomers
+  );
+
+  /**
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   * Delete Customer Controller
+   */
+  fastify.delete("/", deleteCustomerByIdHandler);
 };
 
 export default customer;
