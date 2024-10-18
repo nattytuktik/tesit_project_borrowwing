@@ -6,6 +6,7 @@ import { ServicesError } from "../../utils/error.type"; // Adjust the import pat
  *
  *
  */
+
 export async function createCustomer(data: CreateCustomerInput) {
   try {
     const customers = await prisma.customer.create({
@@ -26,11 +27,8 @@ export async function createCustomer(data: CreateCustomerInput) {
 export async function findManyCustomer() {
   try {
     const customers = await prisma.customer.findMany({
-      select: {
-        id: true,
-        first_name: true,
-        last_name: true,
-        tel: true,
+      where: {
+        status: "ALREALY",
       },
     });
     return customers;
@@ -46,7 +44,7 @@ export async function findManyCustomer() {
 export async function findCustomerById(id: number) {
   try {
     const customers = await prisma.customer.findUnique({
-      where: { id: id },
+      where: { id: id, status: "ALREALY" },
     });
     return customers;
   } catch (e) {
@@ -88,5 +86,34 @@ export async function updateCustomerById(
     return customers;
   } catch (e) {
     throw new ServicesError("Failed to update customers");
+  }
+}
+/** Find Customer By First Name and Last Name
+ *
+ *
+ */
+export async function findCustomerByName({
+  first_name = "",
+  last_name = "",
+}: {
+  first_name: string;
+  last_name: string;
+}) {
+  try {
+    const customers = await prisma.customer.findMany({
+      where: {
+        first_name,
+        last_name,
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        tel: true,
+      },
+    });
+    return customers;
+  } catch (e) {
+    throw new ServicesError("Failed to fetch customers by name");
   }
 }

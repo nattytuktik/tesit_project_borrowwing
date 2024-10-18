@@ -107,7 +107,7 @@ export const loginHandler = async (
     // not match
 
     return reply.code(400).send({
-      magesses: "not log in",
+      magesses: "not login",
     });
   } catch (error) {}
 };
