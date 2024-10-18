@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateCustomerInput } from "./customer.schema";
-import { InternalServerError, ServicesError } from "../../utils/error.type";
+import { ServicesError } from "../../utils/error.type";
 import {
   createCustomer,
   deleteCustomerById,
@@ -9,11 +9,6 @@ import {
   findManyCustomer,
   updateCustomerById,
 } from "./customer.service";
-
-//
-//
-//
-//
 
 /**
  *
@@ -74,8 +69,11 @@ export async function registerCustomerHandler(
 
 /**
  *
- * Find Customer Handler
  *
+ *
+ *
+ *
+ * Find Customer Handler
  */
 export async function getCustomers(
   request: FastifyRequest,
@@ -104,6 +102,11 @@ export async function getCustomers(
 }
 
 /**
+ *
+ *
+ *
+ *
+ *
  * delete Customer By Id Handler
  * auth required
  */
@@ -124,9 +127,14 @@ export async function deleteCustomerByIdHandler(
 }
 
 /**
+ *
+ *
+ *
+ *
+ *
+ *
  * Update Customer By Id Handler
  */
-
 export async function updateCustomerByIdHandler(
   request: FastifyRequest<{
     Params: { id: string };
@@ -151,6 +159,19 @@ export async function updateCustomerByIdHandler(
       };
     }
 
+    const { first_name, last_name, tel } = customerData;
+
+    // Check if the customer data is the same as the customer
+    if (
+      first_name === findCustomer.first_name &&
+      last_name === findCustomer.last_name &&
+      tel === findCustomer.tel
+    ) {
+      reply.code(400).send({
+        msg: "No changes made",
+      });
+    }
+
     // Update the customer
     const customer = await updateCustomerById(parseInt(id), customerData);
 
@@ -159,6 +180,40 @@ export async function updateCustomerByIdHandler(
       data: customer,
     });
   } catch (e) {
-    throw new InternalServerError("Failed to update customer");
+    return {
+      status: 500,
+      details: e,
+    };
+  }
+}
+
+/**
+ *
+ *
+ *
+ *
+ *
+ * Find Customer By Id Handler
+ */
+export async function findCustomerByIdHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const customer = await findCustomerById(parseInt(id));
+
+    if (!customer) {
+      return {
+        status: 404,
+        msg: "Customer not found",
+      };
+    }
+
+    return customer;
+  } catch (e) {
+    reply.code(500).send({
+      error: e,
+    });
   }
 }

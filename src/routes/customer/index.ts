@@ -4,6 +4,7 @@ import {
   registerCustomerHandler,
   deleteCustomerByIdHandler,
   updateCustomerByIdHandler,
+  findCustomerByIdHandler,
 } from "./customer.controller";
 
 const customer: FastifyPluginAsync = async (fastify, opts) => {
@@ -31,6 +32,18 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
 
   /**
    *
+   * find Customer By Id Controller
+   */
+  fastify.get(
+    "/:id",
+    {
+      preHandler: [fastify.authenticate],
+    },
+    findCustomerByIdHandler
+  );
+
+  /**
+   *
    * Delete Customer Controller
    */
   fastify.delete(
@@ -43,7 +56,7 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
 
   // Update Customer Controller
   fastify.put(
-    "/update",
+    "/update/:id",
     { preHandler: [fastify.authenticate] },
     updateCustomerByIdHandler
   );

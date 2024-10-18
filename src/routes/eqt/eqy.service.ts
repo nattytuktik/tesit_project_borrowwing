@@ -1,5 +1,6 @@
 import { CreateEquimentInputType } from "./eqt.schema";
 import prisma from "../../utils/prisma";
+import { ServicesError } from "../../utils/error.type";
 
 export const CreateEquiment = async (input: CreateEquimentInputType) => {
   try {
@@ -13,7 +14,7 @@ export const CreateEquiment = async (input: CreateEquimentInputType) => {
   }
 };
 
-// Insert Many
+// Create Many Equiments
 export const CreateManyEquiments = async (input: CreateEquimentInputType[]) => {
   try {
     // inserts
@@ -22,12 +23,24 @@ export const CreateManyEquiments = async (input: CreateEquimentInputType[]) => {
       skipDuplicates: true,
     });
 
-    if (eqts) {
-      return eqts;
-    }
+    return eqts;
   } catch (e) {
-    console.log(e);
-    return false;
+    throw new ServicesError("Failed to create many equiments");
+  }
+};
+
+// find equiment by name
+export const FindEquimentByName = async (name: string) => {
+  try {
+    const eqt = await prisma.equiment.findFirst({
+      where: {
+        name: name,
+      },
+    });
+
+    return eqt;
+  } catch (e) {
+    throw new ServicesError("Failed to find equiment");
   }
 };
 
