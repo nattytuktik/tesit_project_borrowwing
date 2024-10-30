@@ -102,14 +102,22 @@ export const loginHandler = async (
         secure: true,
         httpOnly: true,
       });
-      return { accessToken: accessToken };
+      return {
+        success: true,
+        accessToken,
+      };
     }
     // not match
-
     return reply.code(400).send({
-      magesses: "not login",
+      magesses: "login failed",
+      detail: request.body,
     });
-  } catch (error) {}
+  } catch (error) {
+    return reply.code(500).send({
+      error: "Internal Server Error",
+      details: error,
+    });
+  }
 };
 
 /**
