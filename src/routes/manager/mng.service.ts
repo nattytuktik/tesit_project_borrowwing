@@ -95,3 +95,34 @@ export async function deleteManagerByUsername(input_userName: string) {
     return false;
   }
 }
+
+/**
+ * @Update_Manager
+ */
+export async function findManagerByUserNameAndPassword(query: {
+  user_name: string;
+  password: string;
+}) {
+  try {
+    const manager = await prisma.manager.findFirst({
+      where: {
+        user_name: query.user_name,
+        password: query.password,
+        status: "ALREALY",
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        user_name: true,
+      },
+    });
+
+    // if not found
+    if (!manager) {
+      return null;
+    } else {
+      return manager;
+    }
+  } catch (error) {}
+}

@@ -4,6 +4,7 @@ import {
   CreateEquiment,
   CreateManyEquiments,
   FindEquimentByName,
+  FindManyEquiments,
 } from "./eqy.service";
 
 /**
@@ -66,6 +67,7 @@ export const createManyEquimentHandler = async (
     if (!equiments) {
       return reply.code(400).send({
         status: 0,
+        success: false,
         msg: "Failed to create many equiments",
       });
     }
@@ -75,7 +77,10 @@ export const createManyEquimentHandler = async (
     });
   } catch (e) {
     //debug
-    return reply.code(500).send(e);
+    return reply.code(500).send({
+      success: false,
+      massages: e,
+    });
   }
 };
 
@@ -90,9 +95,27 @@ export const findManyEquimentHandler = async (
   reply: FastifyReply
 ) => {
   try {
+    // find all equiments
+    const equiments = await FindManyEquiments();
+
+    if (!equiments) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find many equiments",
+      });
+    }
+    return reply.code(200).send({
+      data: equiments,
+      msg: "Successfull to find many equiments",
+      success: true,
+    });
   } catch (e) {
     //debug
-    return reply.code(500).send(e);
+    return reply.code(500).send({
+      success: false,
+      msg: e,
+    });
   }
 };
 

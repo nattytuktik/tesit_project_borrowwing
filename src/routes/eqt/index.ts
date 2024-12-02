@@ -6,6 +6,7 @@ import {
 } from "./eqt.controller";
 
 const equiment: FastifyPluginAsync = async (fastify, opts) => {
+  // Create Equiment
   fastify.post(
     "/",
     {
@@ -14,6 +15,7 @@ const equiment: FastifyPluginAsync = async (fastify, opts) => {
     createEquimentHandler
   );
 
+  // Create Many Equiment
   fastify.post(
     "/many",
     {

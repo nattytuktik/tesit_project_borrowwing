@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('ON', 'DELTED', 'ALREALY', 'INALREALY', 'OFF');
+CREATE TYPE "Status" AS ENUM ('ON', 'DELETED', 'ALREALY', 'INALREALY', 'OFF');
 
 -- CreateEnum
 CREATE TYPE "Pandding" AS ENUM ('PANDDING', 'FAILD', 'SUCCESS');
@@ -21,6 +21,7 @@ CREATE TABLE "Customer" (
     "last_name" TEXT NOT NULL,
     "tel" VARCHAR(10) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'ALREALY',
+    "timeStamps" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
 );
@@ -34,6 +35,7 @@ CREATE TABLE "Borrowing" (
     "end_date" TIMESTAMP(3) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'ALREALY',
     "pandding" "Pandding" NOT NULL DEFAULT 'PANDDING',
+    "timeStamps" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Borrowing_pkey" PRIMARY KEY ("id")
 );
@@ -48,6 +50,7 @@ CREATE TABLE "Manager" (
     "salt" TEXT NOT NULL,
     "tel" VARCHAR(10) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'ALREALY',
+    "timeStamps" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Manager_pkey" PRIMARY KEY ("id")
 );
@@ -57,7 +60,9 @@ CREATE TABLE "Equiment" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
+    "image" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'ALREALY',
+    "timeStamps" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Equiment_pkey" PRIMARY KEY ("id")
 );
@@ -68,6 +73,7 @@ CREATE TABLE "Reservation" (
     "equipment_id" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'ALREALY',
+    "timeStamps" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Reservation_pkey" PRIMARY KEY ("borrowing_id","equipment_id")
 );

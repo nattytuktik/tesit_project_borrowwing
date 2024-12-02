@@ -58,6 +58,7 @@ model Equiment {
   name        String
   quantity    Int
   reservation Reservation[]
+  image       String
   status      Status        @default(ALREALY) 
   timeStamps  DateTime      @default(now())
 }

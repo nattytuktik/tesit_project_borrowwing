@@ -3,7 +3,7 @@ import {
   createManager,
   deleteManagerByUsername,
   findManagerByUsername,
-  findsManyManager,
+  findManagerByUserNameAndPassword,
 } from "./mng.service";
 import { CreateManagerInputType, LoginSchemaInputType } from "./mng.schema";
 import { verifyPassword } from "../../utils/hash";
@@ -97,15 +97,16 @@ export const loginHandler = async (
 
       const accessToken = request.server.jwt.sign(rest);
 
-      reply.setCookie("access_token", accessToken, {
-        path: "/",
-        secure: true,
-        httpOnly: true,
-      });
-      return {
-        success: true,
-        accessToken,
-      };
+      return reply
+        .setCookie("access_token", accessToken, {
+          path: "/",
+          secure: true,
+          httpOnly: true,
+        })
+        .send({
+          success: true,
+          accessToken,
+        });
     }
     // not match
     return reply.code(400).send({
@@ -141,13 +142,34 @@ export async function findsManagerHandler(
 ) {
   //
   try {
-    const managers = await findsManyManager({});
+    const token = request.cookies.access_token;
 
-    if (managers) {
-      return reply.send(managers);
-    } else {
-      return [];
+    if (!token) {
+      return reply.code(401).send({
+        message: "Authentication required",
+        success: false,
+      });
     }
+
+    const admin = await request.jwt.verify<{
+      user_name: string;
+      password: string;
+    }>(token);
+
+    // const manage
+
+    const managers = await findManagerByUserNameAndPassword({
+      user_name: admin.user_name,
+      password: admin.password,
+    });
+
+    // if (managers) {
+    //   return reply.send(managers);
+    // } else {
+    //   return [];
+    // }
+
+    return managers;
   } catch (e) {
     return reply.code(500).send(e).send({
       masseges: "Inernal error at findCustomerHandler",
