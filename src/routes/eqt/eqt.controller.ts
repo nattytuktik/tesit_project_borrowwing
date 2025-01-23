@@ -3,6 +3,7 @@ import { CreateEquimentInputType } from "./eqt.schema";
 import {
   CreateEquiment,
   CreateManyEquiments,
+  FindEquimentById,
   FindEquimentByName,
   FindManyEquiments,
 } from "./eqy.service";
@@ -125,3 +126,35 @@ export const findManyEquimentHandler = async (
  *
  *
  */
+export const findEquimentByIdHandler = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
+  // code here
+
+  try {
+    const params = req.params as { id: string };
+    const id = params.id;
+    const equiment = await FindEquimentById(Number(id));
+
+    if (!equiment) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find equiment",
+      });
+    }
+
+    return reply.code(200).send({
+      data: equiment,
+      msg: "Successfull to find equiment",
+      success: true,
+    });
+  } catch (error) {
+    // code here
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};

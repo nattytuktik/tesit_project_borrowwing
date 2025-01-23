@@ -24,9 +24,7 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
    */
   fastify.get(
     "/",
-    {
-      preHandler: [fastify.authenticate],
-    },
+
     getCustomers
   );
 
@@ -34,13 +32,7 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
    *
    * find Customer By Id Controller
    */
-  fastify.get(
-    "/:id",
-    {
-      preHandler: [fastify.authenticate],
-    },
-    findCustomerByIdHandler
-  );
+  fastify.get("/:id", {}, findCustomerByIdHandler);
 
   /**
    *

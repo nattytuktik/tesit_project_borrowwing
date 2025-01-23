@@ -43,7 +43,7 @@ export async function registerCustomerHandler(
     if (customerValidationLentgh > 0) {
       return reply.code(400).send({
         msg: "Customer Already Exists",
-        error: customerValidation,
+        customer: customerValidation,
       });
     }
 
@@ -63,6 +63,7 @@ export async function registerCustomerHandler(
   } catch (error) {
     reply.code(500).send({
       error,
+      msg: "Internal Server Error creating customer",
     });
   }
 }
@@ -90,7 +91,9 @@ export async function getCustomers(
       });
     }
 
-    return customers;
+    return {
+      data: customers,
+    };
   } catch (e) {
     //
     return {
@@ -201,6 +204,13 @@ export async function findCustomerByIdHandler(
 ) {
   try {
     const { id } = request.params;
+
+    if (!id) {
+      return {
+        status: 400,
+        msg: "not found id from request.params",
+      };
+    }
     const customer = await findCustomerById(parseInt(id));
 
     if (!customer) {
@@ -210,8 +220,11 @@ export async function findCustomerByIdHandler(
       };
     }
 
-    return customer;
+    return {
+      data: customer,
+    };
   } catch (e) {
+    console.log(e);
     reply.code(500).send({
       error: e,
     });

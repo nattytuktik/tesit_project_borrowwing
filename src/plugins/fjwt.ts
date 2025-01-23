@@ -1,6 +1,7 @@
 import fjwt, { FastifyJWTOptions, JWT } from "@fastify/jwt";
 import { FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
+import fCookie from "@fastify/cookie";
 
 export default fp<FastifyJWTOptions>(async function (fastify) {
   fastify.register(fjwt, {
@@ -12,11 +13,18 @@ export default fp<FastifyJWTOptions>(async function (fastify) {
     return next();
   });
 
+  fastify.register(fCookie, {
+    secret: "EFRGIT^&*%HJVJKRED",
+    hook: "preHandler",
+  });
+
   fastify.decorate(
     "authenticate",
     async (req: FastifyRequest, reply: FastifyReply) => {
       try {
-        const token = req.cookies.access_token;
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+
         if (!token) {
           return reply.status(401).send({
             message: "Authentication required",

@@ -100,12 +100,12 @@ export const loginHandler = async (
       return reply
         .setCookie("access_token", accessToken, {
           path: "/",
-          secure: true,
           httpOnly: true,
         })
         .send({
           success: true,
           accessToken,
+          ok: true,
         });
     }
     // not match
@@ -142,7 +142,8 @@ export async function findsManagerHandler(
 ) {
   //
   try {
-    const token = request.cookies.access_token;
+    const authHeader = request.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
       return reply.code(401).send({

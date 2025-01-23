@@ -102,8 +102,12 @@ export async function findCustomerByName({
   try {
     const customers = await prisma.customer.findMany({
       where: {
-        first_name,
-        last_name,
+        first_name: {
+          contains: first_name,
+        },
+        last_name: {
+          contains: last_name,
+        },
       },
       select: {
         id: true,
@@ -114,6 +118,7 @@ export async function findCustomerByName({
     });
     return customers;
   } catch (e) {
+    console.log(e);
     throw new ServicesError("Failed to fetch customers by name");
   }
 }

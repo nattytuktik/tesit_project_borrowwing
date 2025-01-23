@@ -1,13 +1,9 @@
-import { FastifyPluginAsync} from "fastify";
-import { createBwHandler } from "./bw.controller";
+import { FastifyPluginAsync } from "fastify";
+import { createBwHandler, findOneBwHandler } from "./bw.controller";
 
 const bowwing: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-   fastify.get('/', () => {
-      return {
-         status: true
-      }
-   })
-   fastify.post('/', createBwHandler)
-}
+  fastify.get("/:customer_id", findOneBwHandler);
+  fastify.post("/", createBwHandler);
+};
 
-export default bowwing
+export default bowwing;

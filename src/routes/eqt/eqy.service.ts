@@ -59,6 +59,21 @@ export const FindEquimentByName = async (name: string) => {
   }
 };
 
+export const FindEquimentById = async (id: number) => {
+  try {
+    const eqt = await prisma.equiment.findFirst({
+      where: {
+        id: id,
+        status: "ALREALY",
+      },
+    });
+
+    return eqt;
+  } catch (e) {
+    throw new ServicesError("Failed to find equiment");
+  }
+};
+
 // delete One
 export const DeleteEuquimentById = async (id: number) => {
   try {

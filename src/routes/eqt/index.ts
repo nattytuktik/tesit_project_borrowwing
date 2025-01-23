@@ -2,6 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import {
   createEquimentHandler,
   createManyEquimentHandler,
+  findEquimentByIdHandler,
   findManyEquimentHandler,
 } from "./eqt.controller";
 
@@ -25,6 +26,7 @@ const equiment: FastifyPluginAsync = async (fastify, opts) => {
   );
 
   fastify.get("/", findManyEquimentHandler);
+  fastify.get("/:id", findEquimentByIdHandler);
 };
 
 export default equiment;
