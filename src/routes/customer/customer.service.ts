@@ -122,3 +122,17 @@ export async function findCustomerByName({
     throw new ServicesError("Failed to fetch customers by name");
   }
 }
+
+export const FindIdCustomerByBwId = async (bwId: number) => {
+  try {
+    const customerId = await prisma.borrowing.findUnique({
+      where: {
+        id: bwId,
+      },
+    });
+
+    return customerId;
+  } catch (error) {
+    throw new Error("Failed to find customer at customer.service.ts");
+  }
+};

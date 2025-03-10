@@ -32,6 +32,7 @@ model Borrowing {
   manager_id  Int
   start_date  DateTime
   end_date    DateTime
+  address     String        @default("N/A")
   status      Status        @default(ALREALY)
   manager     Manager       @relation(fields: [manager_id], references: [id])
   customer    Customer      @relation(fields: [customer_id], references: [id])

@@ -6,6 +6,7 @@ import {
   deleteCustomerById,
   findCustomerById,
   findCustomerByName,
+  FindIdCustomerByBwId,
   findManyCustomer,
   updateCustomerById,
 } from "./customer.service";
@@ -205,6 +206,10 @@ export async function findCustomerByIdHandler(
   try {
     const { id } = request.params;
 
+    console.log(
+      "dsfsdffadfewfert+++++++++++++++++++++++++++++================",
+      id
+    );
     if (!id) {
       return {
         status: 400,
@@ -230,3 +235,43 @@ export async function findCustomerByIdHandler(
     });
   }
 }
+
+export const findCustomerByBwIdHandler = async (
+  request: FastifyRequest<{ Params: { bw_id: string } }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { bw_id } = request.params;
+
+    if (!bw_id) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find one Borrowwings",
+      });
+    }
+
+    const findCustomer = await FindIdCustomerByBwId(parseInt(bw_id));
+
+    if (findCustomer == null) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find one Borrowwings",
+      });
+    }
+
+    const customer = await findCustomerById(findCustomer.customer_id);
+    return reply.code(200).send({
+      data: customer,
+      msg: "Successfull to find one Borrowwings",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};

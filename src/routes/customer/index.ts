@@ -5,6 +5,7 @@ import {
   deleteCustomerByIdHandler,
   updateCustomerByIdHandler,
   findCustomerByIdHandler,
+  findCustomerByBwIdHandler,
 } from "./customer.controller";
 
 const customer: FastifyPluginAsync = async (fastify, opts) => {
@@ -38,6 +39,8 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
    *
    * Delete Customer Controller
    */
+
+  fastify.get("/bw/:bw_id", findCustomerByBwIdHandler);
   fastify.delete(
     "/",
     {

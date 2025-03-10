@@ -19,6 +19,7 @@ export const createBwHandler = async (
       customer_id: number;
       start_date: string;
       end_date: string;
+      address: string;
     };
   }>,
   reply: FastifyReply
@@ -41,9 +42,11 @@ export const createBwHandler = async (
       });
     }
 
+    // get token from header
     const authHeader = request.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
+    // check token
     if (!token) {
       return reply.code(401).send({
         message: "Authentication required",
@@ -51,30 +54,43 @@ export const createBwHandler = async (
       });
     }
 
+    // verify token
     const admin = await request.jwt.verify<{
       user_name: string;
       password: string;
     }>(token);
 
-    // const manage
-
+    // find manager by username and password
     const managers = await findManagerByUserNameAndPassword({
       user_name: admin.user_name,
       password: admin.password,
     });
 
+    // not found manager
     if (!managers) {
       return reply.code(400).send({
         status: 0,
         msg: "admin not found",
       });
-    } else if (bwBodyRequest.manager_id === 0) {
+    }
+
+    // push manager_id to body request
+    bwBodyRequest.manager_id = managers.id;
+
+    // not found manager
+    if (managers === null || managers === undefined) {
       return reply.code(400).send({
         status: 0,
         msg: "admin not found",
       });
     }
-    bwBodyRequest.manager_id = managers.id;
+    // not found manager
+    else if (bwBodyRequest.manager_id === 0) {
+      return reply.code(400).send({
+        status: 0,
+        msg: "admin not found",
+      });
+    }
 
     // insert into datebase
     const createBw = await createBwService(bwBodyRequest);
@@ -94,6 +110,7 @@ export const createBwHandler = async (
 
     //response
   } catch (error) {
+    console.log(error);
     return reply.code(500).send({
       success: false,
       msg: error,
@@ -143,6 +160,7 @@ export const findOneBwHandler = async (
           msg: "Failed to find many Borrowwings",
         });
       }
+
       return reply.code(200).send({
         data: Borrowwings,
         msg: "Successfull to find many Borrowwings",
