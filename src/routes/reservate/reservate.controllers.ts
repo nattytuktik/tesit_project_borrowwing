@@ -3,6 +3,7 @@ import {
   CreateReservate,
   FindReservateByBorrowwingId,
   FindReservateByBwId,
+  UpdateManyReservateByBorrowwingId,
 } from "./reservate.service";
 
 /**
@@ -44,6 +45,7 @@ export const getReservateByBwIdHandler = async (
       });
     }
 
+    console.log(Reservates);
     return reply.code(200).send({
       data: Reservates,
       msg: "Successfull to find one Reservates",
@@ -71,7 +73,7 @@ export const createReservateHandler = async (
   request: FastifyRequest<{
     Body: {
       bw_id: string;
-      eqts: Array<{ equipment_id: number; quantity: number }>;
+      eqts: Array<{ id: number; quantity: number }>;
     };
   }>,
   reply: FastifyReply
@@ -80,15 +82,7 @@ export const createReservateHandler = async (
 
   try {
     const { bw_id, eqts } = request.body;
-
-    const equiments = eqts.map((item) => {
-      return {
-        id: item.equipment_id,
-        quantity: item.quantity,
-      };
-    });
-
-    // const bw_id_int = parseInt(bw_id);
+    const equiments = eqts;
 
     if (bw_id == null) {
       return reply.code(400).send({
@@ -108,7 +102,7 @@ export const createReservateHandler = async (
       });
     }
     const Reservate = await CreateReservate(parseInt(bw_id), equiments);
-    console.log(Reservate);
+
     if (Reservate) {
       return reply.code(200).send({
         success: true,
@@ -125,6 +119,47 @@ export const createReservateHandler = async (
     return reply.code(500).send({
       success: false,
       msg: "error",
+    });
+  }
+};
+
+/**
+ * update reservate by borrowwingId
+ */
+export const updateReservateByBwIdHandler = async (
+  request: FastifyRequest<{
+    Body: {
+      bw_id: number;
+      eqts: Array<{
+        id: number;
+        quantity: number;
+      }>;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { bw_id, eqts } = request.body;
+
+    if (!bw_id || !eqts) {
+      return reply.code(400).send({
+        success: false,
+        msg: "Invalid request body",
+      });
+    }
+
+    // Add your update logic here
+    await UpdateManyReservateByBorrowwingId(bw_id, eqts);
+
+    return reply.code(200).send({
+      success: true,
+      msg: "Successfully updated Reservate",
+    });
+  } catch (error) {
+    console.log(error);
+    return reply.code(500).send({
+      success: false,
+      msg: "Internal server error",
     });
   }
 };

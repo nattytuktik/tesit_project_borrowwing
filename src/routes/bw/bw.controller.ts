@@ -3,7 +3,10 @@ import { CreateBwInputType } from "./bw.schema";
 import {
   createBwService,
   findBorrowwingByCustomerId,
+  FindBorrowwingServive,
+  FindBwById,
   findManyBwService,
+  UpdateBwPandding,
 } from "./bw.service";
 import { findCustomerById } from "../customer/customer.service";
 import { findManagerByUserNameAndPassword } from "../manager/mng.service";
@@ -124,7 +127,7 @@ export const createBwHandler = async (
  * @param reply
  * @returns
  */
-export const findOneBwHandler = async (
+export const findBwByCustomerIdHandler = async (
   request: FastifyRequest<{
     Params: { customer_id: string };
   }>,
@@ -133,7 +136,6 @@ export const findOneBwHandler = async (
   try {
     const customerid = parseInt(request.params.customer_id);
 
-    console.log(customerid);
     // find many Borrowwings
     if (customerid) {
       const Borrowwings = await findBorrowwingByCustomerId(customerid);
@@ -175,6 +177,118 @@ export const findOneBwHandler = async (
   }
 };
 
+export const findBorrowwingById = async (
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const bw_id = parseInt(request.params.id);
+
+    const bw = await FindBwById(bw_id);
+
+    if (bw) {
+      return reply
+        .send({
+          data: bw,
+          maasages: "successfully",
+        })
+        .status(200);
+    }
+
+    return reply
+      .send({
+        data: null,
+        massages: "not found with this id",
+      })
+      .status(404);
+  } catch (error) {
+    console.log(error);
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
+
 /**
  * sub contontroller
  */
+
+export const findManyBorrowwingHandler = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const findBorrowwinges = await FindBorrowwingServive();
+
+    if (findBorrowwinges) {
+      return reply
+        .send({
+          data: findBorrowwinges,
+          status: true,
+        })
+        .status(200);
+    }
+
+    return reply.code(400).send({
+      status: 0,
+      success: false,
+      msg: "Failed to find Borrowwings",
+    });
+  } catch (error) {
+    console.log(error);
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
+
+export const updatePanddingHandler = async (
+  request: FastifyRequest<{
+    Body: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  // code here
+
+  try {
+    const bw_id = parseInt(request.body.id);
+
+    if (!bw_id) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find Borrowwing",
+      });
+    }
+
+    const result = await UpdateBwPandding(bw_id);
+
+    if (result) {
+      return reply
+        .send({
+          data: result,
+          status: true,
+        })
+        .status(200);
+    }
+    return reply.code(400).send({
+      status: 0,
+      success: false,
+      msg: "Failed to find Borrowwing",
+    });
+  } catch (error) {
+    // code here
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};

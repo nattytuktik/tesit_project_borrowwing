@@ -1,32 +1,38 @@
 import { FastifyPluginAsync } from "fastify";
 import {
-  createEquimentHandler,
-  createManyEquimentHandler,
-  findEquimentByIdHandler,
-  findManyEquimentHandler,
+  createEquipmentHandler,
+  createManyEquipmentHandler,
+  findEquipmentByIdHandler,
+  findManyEquipmentHandler,
+  uploadImageHandler,
+  updateEquipmentHandler,
 } from "./eqt.controller";
 
-const equiment: FastifyPluginAsync = async (fastify, opts) => {
-  // Create Equiment
+const equipment: FastifyPluginAsync = async (fastify, opts) => {
+  // Create Equipment
   fastify.post(
     "/",
     {
       preHandler: [fastify.authenticate],
     },
-    createEquimentHandler
+    createEquipmentHandler
   );
 
-  // Create Many Equiment
+  // Create Many Equipment
   fastify.post(
     "/many",
     {
       preHandler: [fastify.authenticate],
     },
-    createManyEquimentHandler
+    createManyEquipmentHandler
   );
 
-  fastify.get("/", findManyEquimentHandler);
-  fastify.get("/:id", findEquimentByIdHandler);
+  fastify.get("/", findManyEquipmentHandler);
+  fastify.get("/:id", findEquipmentByIdHandler);
+
+  fastify.get("/bw/bw_id", findEquipmentByIdHandler);
+  fastify.put("/update/image", uploadImageHandler);
+  fastify.put("", updateEquipmentHandler);
 };
 
-export default equiment;
+export default equipment;

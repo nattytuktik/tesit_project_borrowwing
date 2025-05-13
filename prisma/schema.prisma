@@ -36,7 +36,7 @@ model Borrowing {
   status      Status        @default(ALREALY)
   manager     Manager       @relation(fields: [manager_id], references: [id])
   customer    Customer      @relation(fields: [customer_id], references: [id])
-  pandding    Pandding      @default(PANDDING)
+  pandding    Pandding      @default(PANDING)
   Reservation Reservation[]
   timeStamps  DateTime      @default(now())
 }
@@ -54,14 +54,16 @@ model Manager {
   timeStamps DateTime    @default(now())
 }
 
-model Equiment {
+model Equipment {
   id          Int           @id @default(autoincrement())
   name        String
   quantity    Int
+  used        Int           @default(0)
   reservation Reservation[]
   image       String
   status      Status        @default(ALREALY) 
   timeStamps  DateTime      @default(now())
+	@@map("Equiment")
 }
 
 model Reservation {
@@ -69,7 +71,7 @@ model Reservation {
   equipment_id Int
   quantity     Int
   borrowing    Borrowing @relation(fields: [borrowing_id], references: [id])
-  equipment    Equiment  @relation(fields: [equipment_id], references: [id])
+  equipment    Equipment  @relation(fields: [equipment_id], references: [id])
   status       Status    @default(ALREALY)
   timeStamps   DateTime  @default(now())
 
@@ -85,7 +87,8 @@ enum Status {
 }
 
 enum Pandding {
-  PANDDING
+  PANDING
+  PROCESSING
   FAILD
   SUCCESS
 }

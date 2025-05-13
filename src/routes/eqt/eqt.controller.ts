@@ -1,44 +1,45 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CreateEquimentInputType } from "./eqt.schema";
+import { CreateEquipmentInputType } from "./eqt.schema";
 import {
-  CreateEquiment,
-  CreateManyEquiments,
-  FindEquimentById,
-  FindEquimentByName,
-  FindManyEquiments,
-} from "./eqy.service";
+  CreateEquipment,
+  CreateManyEquipments,
+  FindEquipmentById,
+  FindEquipmentByName,
+  FindManyEquipments,
+  UpdateImageNameById,
+  UpdateEquipmentById,
+} from "./eqt.service";
 
 /**
  *
- * Create Equiment
+ * Create Equipment
  */
-export const createEquimentHandler = async (
+export const createEquipmentHandler = async (
   request: FastifyRequest<{
-    Body: CreateEquimentInputType;
+    Body: CreateEquipmentInputType;
   }>,
   reply: FastifyReply
 ) => {
   try {
-    // verifi requestBody
-    const equimentBodyRequest = request.body;
+    // verify requestBody
+    const equipmentBodyRequest = request.body;
 
-    // find equiment
-    const findEquiment = await FindEquimentByName(equimentBodyRequest.name);
+    // find equipment
+    const findEquipment = await FindEquipmentByName(equipmentBodyRequest.name);
 
-    if (findEquiment) {
+    if (findEquipment) {
       return reply.code(400).send({
         status: 0,
-        msg: "Equiment Already Exists",
+        msg: "Equipment Already Exists",
       });
     }
-    // insert into datebase
-    const createEquiment = await CreateEquiment(equimentBodyRequest);
+    // insert into database
+    const createEquipment = await CreateEquipment(equipmentBodyRequest);
 
-    //response
-
+    // response
     return reply.code(200).send({
-      result: createEquiment,
-      msg: "Inserr Equiment Successfull",
+      result: createEquipment,
+      msg: "Insert Equipment Successful",
     });
   } catch (e) {
     reply.code(500).send({
@@ -51,36 +52,36 @@ export const createEquimentHandler = async (
 /**
  *
  *
- * Create Many Equiment
+ * Create Many Equipment
  */
-export const createManyEquimentHandler = async (
+export const createManyEquipmentHandler = async (
   request: FastifyRequest<{
-    Body: CreateEquimentInputType[];
+    Body: CreateEquipmentInputType[];
   }>,
   reply: FastifyReply
 ) => {
   try {
-    // verifi requestBody
-    const equimentBodyRequest = request.body;
+    // verify requestBody
+    const equipmentBodyRequest = request.body;
 
-    const equiments = await CreateManyEquiments(equimentBodyRequest);
+    const equipments = await CreateManyEquipments(equipmentBodyRequest);
 
-    if (!equiments) {
+    if (!equipments) {
       return reply.code(400).send({
         status: 0,
         success: false,
-        msg: "Failed to create many equiments",
+        msg: "Failed to create many equipments",
       });
     }
     return reply.code(200).send({
-      result: equiments,
-      msg: "Successfull to create many equiments",
+      result: equipments,
+      msg: "Successful to create many equipments",
     });
   } catch (e) {
-    //debug
+    // debug
     return reply.code(500).send({
       success: false,
-      massages: e,
+      messages: e,
     });
   }
 };
@@ -89,30 +90,30 @@ export const createManyEquimentHandler = async (
  *
  *
  *
- * find many equiment
+ * find many equipment
  */
-export const findManyEquimentHandler = async (
+export const findManyEquipmentHandler = async (
   request: FastifyRequest,
   reply: FastifyReply
 ) => {
   try {
-    // find all equiments
-    const equiments = await FindManyEquiments();
+    // find all equipments
+    const equipments = await FindManyEquipments();
 
-    if (!equiments) {
+    if (!equipments) {
       return reply.code(400).send({
         status: 0,
         success: false,
-        msg: "Failed to find many equiments",
+        msg: "Failed to find many equipments",
       });
     }
     return reply.code(200).send({
-      data: equiments,
-      msg: "Successfull to find many equiments",
+      data: equipments,
+      msg: "Successful to find many equipments",
       success: true,
     });
   } catch (e) {
-    //debug
+    // debug
     return reply.code(500).send({
       success: false,
       msg: e,
@@ -126,7 +127,7 @@ export const findManyEquimentHandler = async (
  *
  *
  */
-export const findEquimentByIdHandler = async (
+export const findEquipmentByIdHandler = async (
   req: FastifyRequest,
   reply: FastifyReply
 ) => {
@@ -135,19 +136,19 @@ export const findEquimentByIdHandler = async (
   try {
     const params = req.params as { id: string };
     const id = params.id;
-    const equiment = await FindEquimentById(Number(id));
+    const equipment = await FindEquipmentById(Number(id));
 
-    if (!equiment) {
+    if (!equipment) {
       return reply.code(400).send({
         status: 0,
         success: false,
-        msg: "Failed to find equiment",
+        msg: "Failed to find equipment",
       });
     }
 
     return reply.code(200).send({
-      data: equiment,
-      msg: "Successfull to find equiment",
+      data: equipment,
+      msg: "Successful to find equipment",
       success: true,
     });
   } catch (error) {
@@ -158,3 +159,149 @@ export const findEquimentByIdHandler = async (
     });
   }
 };
+
+export const uploadImageHandler = async (
+  requset: FastifyRequest<{
+    Body: {
+      id: string;
+      image: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  // code here
+
+  try {
+    const { image } = requset.body;
+    const str_id = requset.body.id;
+    const id = parseInt(str_id);
+    if (isNaN(id)) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Invalid id",
+      });
+    }
+
+    if (!image) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Image is required",
+      });
+    }
+
+    // Save the image to the server or perform any other operation
+
+    const saveImage = await UpdateImageNameById(id, image);
+
+    if (!saveImage) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to save image",
+      });
+    }
+
+    return reply.code(200).send({
+      data: image,
+      msg: "Successful to upload image",
+      success: true,
+    });
+  } catch (error) {
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
+
+export const updateEquipmentHandler = async (
+  request: FastifyRequest<{
+    Body: {
+      id: string;
+      data: {
+        name: string;
+        used: string;
+        quantity: string;
+      };
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { id, data } = request.body;
+    const str_id = id;
+    const equipmentId = parseInt(str_id);
+
+    if (isNaN(equipmentId)) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Invalid id",
+      });
+    } else if (isNaN(Number(data.used))) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Invalid used value",
+      });
+    } else if (isNaN(Number(data.quantity))) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Invalid quantity value",
+      });
+    }
+
+    // Update the equipment in the database
+    const updatedEquipment = await UpdateEquipmentById(equipmentId, data);
+
+    return reply.code(200).send({
+      data: updatedEquipment,
+      msg: "Successful to update equipment",
+      success: true,
+    });
+  } catch (error) {
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
+
+// export const findEquipmentByBorrowingIdHandler = async (
+//   request: FastifyRequest<{
+//     Params: {
+//       bw_id: string;
+//     };
+//   }>,
+//   reply: FastifyReply
+// ) => {
+//   try {
+//     // Add your logic here
+
+//     if (request.params.bw_id!) {
+//       return reply.code(400).send({
+//         status: 400,
+//         msg: "not found bw_id"
+//       })
+//     }
+
+//     const bw_id = parseInt(request.params.bw_id)
+
+//     if (isNaN(bw_id)) {
+//       return reply.code(400).send({
+//         status: 400,
+//         msg: "not found bw_id"
+//       })
+//     }
+
+//     const equipments = await
+//   } catch (error) {
+//     return reply.code(500).send({
+//       success: false,
+//       msg: error,
+//     });
+//   }
+// };

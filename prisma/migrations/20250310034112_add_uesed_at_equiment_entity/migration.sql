@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Equiment" ADD COLUMN     "used" INTEGER NOT NULL DEFAULT 0;

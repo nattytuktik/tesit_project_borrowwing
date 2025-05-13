@@ -25,14 +25,30 @@ export const findManyBwService = async () => {
   }
 };
 
-export const findBwbyIdServive = async (id: number) => {
+export const FindBwById = async (id: number) => {
   try {
     const Borrowwing = await prisma.borrowing.findUnique({
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        customer: true,
+        manager_id: true,
+        start_date: true,
+        end_date: true,
+        address: true,
+        status: true,
+        pandding: true,
+        timeStamps: true,
+      },
     });
-    return Borrowwing;
+
+    if (Borrowwing) {
+      return Borrowwing;
+    } else {
+      return {};
+    }
   } catch (e) {
     throw new ServicesError("Failed to find Borrowwing");
   }
@@ -46,6 +62,7 @@ export const createBwService = async (data: CreateBwInputType) => {
         manager_id: data.manager_id,
         start_date: data.start_date,
         end_date: data.end_date,
+        address: data.address,
       },
     });
     return Borrowwing;
@@ -53,7 +70,33 @@ export const createBwService = async (data: CreateBwInputType) => {
     throw new ServicesError("Failed to create Borrowwing");
   }
 };
+export const FindBorrowwingServive = async () => {
+  try {
+    const findBw = await prisma.borrowing.findMany({
+      where: {
+        status: "ALREALY",
+      },
+      select: {
+        id: true,
+        start_date: true,
+        end_date: true,
+        address: true,
+        status: true,
+        customer: true,
+        pandding: true,
+        timeStamps: true,
+      },
+    });
 
+    if (findBw) {
+      return findBw;
+    }
+
+    return null;
+  } catch (error) {
+    throw new ServicesError("Failed to find Borrowwing");
+  }
+};
 export const deleteBwByIdService = async (id: number) => {
   try {
     // updtate status to DELETED
@@ -98,6 +141,22 @@ export const updateBwByIdService = async (
         manager_id: data.manager_id,
         start_date: data.start_date,
         end_date: data.end_date,
+      },
+    });
+    return Borrowwing;
+  } catch (error) {
+    throw new ServicesError("Failed to update Borrowwing");
+  }
+};
+
+export const UpdateBwPandding = async (id: number) => {
+  try {
+    const Borrowwing = await prisma.borrowing.update({
+      where: {
+        id: id,
+      },
+      data: {
+        pandding: "SUCCESS",
       },
     });
     return Borrowwing;

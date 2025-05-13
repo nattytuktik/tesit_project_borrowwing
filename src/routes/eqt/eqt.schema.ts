@@ -6,4 +6,4 @@ const createEqtSchema = z.object({
   image: z.string(),
 });
 
-export type CreateEquimentInputType = z.infer<typeof createEqtSchema>;
+export type CreateEquipmentInputType = z.infer<typeof createEqtSchema>;

@@ -1,9 +1,18 @@
 import { FastifyPluginAsync } from "fastify";
-import { createBwHandler, findOneBwHandler } from "./bw.controller";
+import {
+  createBwHandler,
+  findBorrowwingById,
+  findBwByCustomerIdHandler,
+  findManyBorrowwingHandler,
+  updatePanddingHandler,
+} from "./bw.controller";
 
 const bowwing: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get("/:customer_id", findOneBwHandler);
+  fastify.get("/customer/:customer_id", findBwByCustomerIdHandler);
+  fastify.get("/:id", findBorrowwingById);
+  fastify.get("/", findManyBorrowwingHandler);
   fastify.post("/", createBwHandler);
+  fastify.put("/update/pandding", updatePanddingHandler);
 };
 
 export default bowwing;
