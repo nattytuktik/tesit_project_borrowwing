@@ -1,6 +1,6 @@
 import prisma from "../../utils/prisma";
 import { ServicesError } from "../../utils/error.type";
-import { CreateBwInputType } from "./bw.schema";
+import { CreateBwInputType, TReservate } from "./bw.schema";
 
 //  find Borrowwing by customer id
 export const findBorrowwingByCustomerId = async (customerId: number) => {
@@ -18,7 +18,13 @@ export const findBorrowwingByCustomerId = async (customerId: number) => {
 
 export const findManyBwService = async () => {
   try {
-    const Borrowwing = await prisma.borrowing.findMany();
+    const Borrowwing = await prisma.borrowing.findMany({
+      where: {
+        status: {
+          not: "DELETED",
+        },
+      },
+    });
     return Borrowwing;
   } catch (e) {
     throw new ServicesError("Failed to find Borrowwing");
@@ -30,6 +36,9 @@ export const FindBwById = async (id: number) => {
     const Borrowwing = await prisma.borrowing.findUnique({
       where: {
         id: id,
+        status: {
+          not: "DELETED",
+        },
       },
       select: {
         id: true,
@@ -160,6 +169,32 @@ export const UpdateBwPandding = async (id: number) => {
       },
     });
     return Borrowwing;
+  } catch (error) {
+    throw new ServicesError("Failed to update Borrowwing");
+  }
+};
+
+export const UpdateReservate = async (reservates: Array<TReservate>) => {
+  try {
+    const result = await prisma.$transaction(
+      reservates.map((item) =>
+        prisma.equipment.update({
+          where: {
+            id: item.equipment.id,
+          },
+          data: {
+            used: item.equipment.used - item.quantity,
+          },
+        })
+      )
+    );
+
+    console.log(result);
+    if (!result) {
+      throw new ServicesError("Failed to update equipment");
+    }
+
+    return result;
   } catch (error) {
     throw new ServicesError("Failed to update Borrowwing");
   }

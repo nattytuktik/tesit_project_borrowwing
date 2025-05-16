@@ -141,25 +141,28 @@ export async function deleteCustomerByIdHandler(
  */
 export async function updateCustomerByIdHandler(
   request: FastifyRequest<{
-    Params: { id: string };
-    Body: CreateCustomerInput;
+    Body: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      tel: string;
+    };
   }>,
   reply: FastifyReply
 ) {
   try {
     // Get the customer id from the request params
-    const { id } = request.params;
 
     // Get the customer data from the request body
     const customerData = request.body;
 
     // Check if the customer exists
-    const findCustomer = await findCustomerById(parseInt(id));
+    const findCustomer = await findCustomerById(customerData.id);
 
     if (!findCustomer) {
       return {
-        status: 404,
         msg: "Customer not found",
+        status: false,
       };
     }
 
@@ -173,15 +176,17 @@ export async function updateCustomerByIdHandler(
     ) {
       reply.code(400).send({
         msg: "No changes made",
+        status: false,
       });
     }
 
     // Update the customer
-    const customer = await updateCustomerById(parseInt(id), customerData);
+    const customer = await updateCustomerById(customerData.id, customerData);
 
     return reply.code(200).send({
       msg: "Customer updated successfully",
       data: customer,
+      status: true,
     });
   } catch (e) {
     return {
@@ -206,10 +211,6 @@ export async function findCustomerByIdHandler(
   try {
     const { id } = request.params;
 
-    console.log(
-      "dsfsdffadfewfert+++++++++++++++++++++++++++++================",
-      id
-    );
     if (!id) {
       return {
         status: 400,

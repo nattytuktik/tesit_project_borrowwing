@@ -81,7 +81,11 @@ export async function updateCustomerById(
   try {
     const customers = await prisma.customer.update({
       where: { id: id },
-      data: data,
+      data: {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        tel: data.tel,
+      },
     });
     return customers;
   } catch (e) {

@@ -8,6 +8,7 @@ import {
   FindManyEquipments,
   UpdateImageNameById,
   UpdateEquipmentById,
+  DeleteEquipmentById,
 } from "./eqt.service";
 
 /**
@@ -270,6 +271,39 @@ export const updateEquipmentHandler = async (
   }
 };
 
+export const deleteEquipmentByIdHandler = async (
+  request: FastifyRequest<{
+    Body: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = parseInt(request.body.id);
+
+    // Delete the equipment from the database
+    const deletedEquipment = await DeleteEquipmentById(Number(id));
+    if (!deletedEquipment) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to delete equipment",
+      });
+    }
+    return reply.code(200).send({
+      data: deletedEquipment,
+      msg: "Successful to delete equipment",
+      success: true,
+    });
+  } catch (error) {
+    // code here
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
 // export const findEquipmentByBorrowingIdHandler = async (
 //   request: FastifyRequest<{
 //     Params: {

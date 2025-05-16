@@ -1,12 +1,14 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CreateBwInputType } from "./bw.schema";
+import { CreateBwInputType, TReservate } from "./bw.schema";
 import {
   createBwService,
+  deleteBwByIdService,
   findBorrowwingByCustomerId,
   FindBorrowwingServive,
   FindBwById,
   findManyBwService,
   UpdateBwPandding,
+  UpdateReservate,
 } from "./bw.service";
 import { findCustomerById } from "../customer/customer.service";
 import { findManagerByUserNameAndPassword } from "../manager/mng.service";
@@ -252,6 +254,7 @@ export const updatePanddingHandler = async (
   request: FastifyRequest<{
     Body: {
       id: string;
+      reservates: Array<TReservate>;
     };
   }>,
   reply: FastifyReply
@@ -269,6 +272,14 @@ export const updatePanddingHandler = async (
       });
     }
 
+    const updateReservate = await UpdateReservate(request.body.reservates);
+    if (!updateReservate) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find Borrowwing",
+      });
+    }
     const result = await UpdateBwPandding(bw_id);
 
     if (result) {
@@ -286,6 +297,56 @@ export const updatePanddingHandler = async (
     });
   } catch (error) {
     // code here
+    return reply.code(500).send({
+      success: false,
+      msg: error,
+    });
+  }
+};
+
+export const deleteBwHandler = async (
+  request: FastifyRequest<{
+    Body: {
+      id: number;
+      reservates: Array<TReservate>;
+    };
+  }>,
+  reply: FastifyReply
+) => {
+  try {
+    const bw_id = request.body.id;
+    const reservates = request.body.reservates;
+    if (!bw_id) {
+      return reply.code(400).send({
+        status: 0,
+        success: false,
+        msg: "Failed to find Borrowwing",
+      });
+    }
+
+    const delBw = await deleteBwByIdService(bw_id);
+
+    if (reservates.length > 0) {
+      // const reuseReservates = await UpdateReservate(reservates);
+
+      await UpdateReservate(reservates);
+    }
+
+    if (delBw) {
+      return reply
+        .send({
+          data: delBw,
+          status: true,
+        })
+        .status(200);
+    }
+
+    return reply.code(400).send({
+      status: 0,
+      success: false,
+      msg: "Failed to delete Borrowwing",
+    });
+  } catch (error) {
     return reply.code(500).send({
       success: false,
       msg: error,

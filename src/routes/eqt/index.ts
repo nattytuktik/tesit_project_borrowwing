@@ -6,6 +6,7 @@ import {
   findManyEquipmentHandler,
   uploadImageHandler,
   updateEquipmentHandler,
+  deleteEquipmentByIdHandler,
 } from "./eqt.controller";
 
 const equipment: FastifyPluginAsync = async (fastify, opts) => {
@@ -32,7 +33,8 @@ const equipment: FastifyPluginAsync = async (fastify, opts) => {
 
   fastify.get("/bw/bw_id", findEquipmentByIdHandler);
   fastify.put("/update/image", uploadImageHandler);
-  fastify.put("", updateEquipmentHandler);
+  fastify.put("/", updateEquipmentHandler);
+  fastify.post("/delete", deleteEquipmentByIdHandler);
 };
 
 export default equipment;

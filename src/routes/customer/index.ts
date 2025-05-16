@@ -50,11 +50,7 @@ const customer: FastifyPluginAsync = async (fastify, opts) => {
   );
 
   // Update Customer Controller
-  fastify.put(
-    "/update/:id",
-    { preHandler: [fastify.authenticate] },
-    updateCustomerByIdHandler
-  );
+  fastify.put("/", updateCustomerByIdHandler);
 };
 
 export default customer;
